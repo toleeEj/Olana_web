@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from core.models import Profile  # We link some to profile if needed
+from core.models import Profile  # Import Profile from core app
 
 class Portfolio(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='portfolios')  
     title = models.CharField(max_length=200)
     description = models.TextField()
     image = models.ImageField(upload_to='portfolios/', blank=True, null=True)
@@ -19,6 +20,7 @@ class Portfolio(models.Model):
         ordering = ['-date', '-created_at']
 
 class Product(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='products') 
     title = models.CharField(max_length=200)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text="Optional price if it's a paid service/program")

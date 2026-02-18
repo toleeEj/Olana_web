@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from core.views import RegisterView
+# from core.views import RegisterView
 
 
 from rest_framework_simplejwt.views import (
@@ -17,7 +17,7 @@ urlpatterns = [
     path('api/works/', include('works.urls')),
     path('api/blog/', include('blog.urls')),
     path('api/contact/', include('contact.urls')),
-    path('api/register/', RegisterView.as_view(), name='register'),
+    # path('api/register/', RegisterView.as_view(), name='register'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

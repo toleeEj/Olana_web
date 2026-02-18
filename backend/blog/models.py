@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from core.models import Profile  # Import Profile from core app
 
 class BlogCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -19,6 +20,7 @@ class BlogCategory(models.Model):
         verbose_name_plural = "Blog Categories"
 
 class BlogPost(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='blog_posts')  
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
     content = models.TextField()

@@ -2,9 +2,10 @@ from django.db import models
 from django.utils import timezone
 
 class Profile(models.Model):
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE, related_name='profile', null=True, blank=True, default=None)  # Link to Django User
     full_name = models.CharField(max_length=100, default="Dr. Olana Wakoya Gichile")
     title = models.CharField(max_length=100, default="MD, MSc | Lecturer & General Practitioner")
-    bio = models.TextField(default="A dedicated clinician-educator passionate about global health equity, medical education, and improving access to quality healthcare in resource-limited settings.")
+    bio = models.TextField(default="A dedicated clinician-educator passionate about global health equity...")
     profile_image = models.ImageField(upload_to='profile/', blank=True, null=True)
     years_experience = models.PositiveIntegerField(default=10)
     specialization = models.CharField(max_length=200, default="Global Health, Internal Medicine, Medical Education")
@@ -16,7 +17,7 @@ class Profile(models.Model):
 
     class Meta:
         verbose_name = "Profile"
-        verbose_name_plural = "Profile"  
+        verbose_name_plural = "Profiles" 
 
 
 class Skill(models.Model):

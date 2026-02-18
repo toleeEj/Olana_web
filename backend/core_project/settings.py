@@ -145,19 +145,19 @@ CORS_ALLOW_ALL_ORIGINS = True  # for development only — we'll secure later
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 12,  # Good for blogs/portfolios
+    'PAGE_SIZE': 12,
+
+    # Public by default
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  
+        'rest_framework.permissions.AllowAny',
     ],
 
+    # Authentication only used where permissions require it
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
 }
+
 
 
 

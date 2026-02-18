@@ -18,19 +18,27 @@ function Home() {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
+        const token = localStorage.getItem('access');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
         const [profileRes, portfoliosRes] = await Promise.all([
-          api.get('/core/profiles/'),
-          api.get('/works/portfolios/'),
+          api.get('/core/profiles/', { headers }),
+          api.get('/works/portfolios/', { headers }),
         ]);
 
-        setProfile(profileRes.data[0] || null);
+        // Handle both paginated and non-paginated API responses
+        const profileArray = Array.isArray(profileRes.data)
+          ? profileRes.data
+          : Array.isArray(profileRes.data.results)
+            ? profileRes.data.results
+            : [];
+        setProfile(profileArray[0] || null);
 
         const portfoliosArray = Array.isArray(portfoliosRes.data)
           ? portfoliosRes.data
           : Array.isArray(portfoliosRes.data.results)
             ? portfoliosRes.data.results
             : [];
-
         setFeaturedPortfolios(
           portfoliosArray.filter(p => p.is_featured).slice(0, 4)
         );
@@ -48,7 +56,9 @@ function Home() {
   if (loading) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-emerald-600 text-lg">Loading Dr. Olana's portfolio...</div>
+        <div className="animate-pulse text-emerald-600 text-lg">
+          Loading portfolio...
+        </div>
       </div>
     );
   }
@@ -56,7 +66,9 @@ function Home() {
   if (error) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
-        <div className="text-red-500 bg-red-50 px-6 py-4 rounded-xl shadow-lg">{error}</div>
+        <div className="text-red-500 bg-red-50 px-6 py-4 rounded-xl shadow-lg">
+          {error}
+        </div>
       </div>
     );
   }
@@ -65,11 +77,10 @@ function Home() {
     <div className="pt-20 overflow-hidden">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-emerald-900 via-teal-800 to-gray-900 text-white">
-        {/* Simple overlay for texture (no inline SVG) */}
         <div className="absolute inset-0 bg-black/10"></div>
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
           <div className="grid md:grid-cols-2 gap-12 items-center">
+            
             {/* Left Column */}
             <div className="text-center md:text-left animate-fade-in-up">
               {profile?.profile_image && (
@@ -86,17 +97,17 @@ function Home() {
                   </div>
                 </div>
               )}
-              
+
               <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-                {profile?.full_name || 'Dr. Olana Wakoya Gichile'}
+                {profile?.full_name || 'Anonymous Doctor'}
               </h1>
-              
+
               <p className="text-xl md:text-2xl text-emerald-200 mb-6 font-light">
-                {profile?.title || 'MD, MSc | Lecturer & General Practitioner | Global Health Educator'}
+                {profile?.title || 'Medical Professional'}
               </p>
-              
+
               <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto md:mx-0">
-                {profile?.bio?.substring(0, 200) + '...' || 'Dedicated clinician-educator focused on global health equity, medical education, and community health development across Ethiopia and Rwanda.'}
+                {(profile?.bio?.substring(0, 200) || 'No bio available.') + '...'}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
@@ -116,18 +127,22 @@ function Home() {
               </div>
             </div>
 
-            {/* Right Column - decorative stats */}
+            {/* Right Column Stats */}
             <div className="hidden md:grid grid-cols-2 gap-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
                 <BriefcaseIcon className="w-8 h-8 text-emerald-300 mb-3" />
-                <div className="text-3xl font-bold">{profile?.years_experience || 12}+</div>
+                <div className="text-3xl font-bold">{profile?.years_experience || 0}+</div>
                 <div className="text-emerald-200">Years Experience</div>
               </div>
+
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
                 <AcademicCapIcon className="w-8 h-8 text-emerald-300 mb-3" />
-                <div className="text-3xl font-bold">Global</div>
-                <div className="text-emerald-200">Health Focus</div>
+                <div className="text-3xl font-bold">
+                  {profile?.specialization?.split(',')[0] || 'Global'}
+                </div>
+                <div className="text-emerald-200">Specialization</div>
               </div>
+
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 col-span-2">
                 <MapPinIcon className="w-8 h-8 text-emerald-300 mb-3" />
                 <div className="text-3xl font-bold">Ethiopia & Rwanda</div>
@@ -136,33 +151,10 @@ function Home() {
             </div>
           </div>
         </div>
-
-        {/* Bottom fade */}
         <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-gray-50 to-transparent"></div>
       </section>
 
-      {/* Quick Highlights (mobile friendly) */}
-      <section className="py-16 px-4 bg-gray-50 md:hidden">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-            <BriefcaseIcon className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-emerald-700">{profile?.years_experience || 12}+</div>
-            <div className="text-gray-600">Years Experience</div>
-          </div>
-          <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-            <AcademicCapIcon className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-emerald-700">Global Health</div>
-            <div className="text-gray-600">Specialization</div>
-          </div>
-          <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-            <MapPinIcon className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-emerald-700">Ethiopia & Rwanda</div>
-            <div className="text-gray-600">Focus Regions</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Works */}
+      {/* Featured Works Section */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 animate-fade-in-up">
@@ -171,7 +163,7 @@ function Home() {
           </div>
 
           {featuredPortfolios.length === 0 ? (
-            <p className="text-center text-gray-500 py-12">No featured works yet. Mark some portfolios as featured in admin.</p>
+            <p className="text-center text-gray-500 py-12">No featured works yet.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuredPortfolios.map((portfolio, index) => (
@@ -180,7 +172,6 @@ function Home() {
                   className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
                   style={{ animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both` }}
                 >
-                  {/* Image with overlay */}
                   <div className="relative h-48 overflow-hidden">
                     {portfolio.image ? (
                       <img
@@ -201,7 +192,6 @@ function Home() {
                       {portfolio.title}
                     </h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">{portfolio.description}</p>
-
                     {portfolio.tags && (
                       <div className="flex flex-wrap gap-2 mb-4">
                         {portfolio.tags.split(',').slice(0, 3).map((tag, idx) => (
@@ -211,7 +201,6 @@ function Home() {
                         ))}
                       </div>
                     )}
-
                     {portfolio.link && (
                       <a
                         href={portfolio.link}
@@ -225,7 +214,6 @@ function Home() {
                     )}
                   </div>
 
-                  {/* Featured badge */}
                   {portfolio.is_featured && (
                     <div className="absolute top-3 right-3 bg-emerald-500 text-white text-xs px-2 py-1 rounded-full shadow-lg">
                       Featured
@@ -238,45 +226,18 @@ function Home() {
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="relative py-20 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 overflow-hidden">
-        {/* Simple overlay for depth */}
-        <div className="absolute inset-0 bg-black/10"></div>
-
-        <div className="relative max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in-up">
-            Ready to Collaborate or Consult?
-          </h2>
-          <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            Whether you're a student, institution, or organization interested in global health education, clinical mentorship, or consulting — let's connect.
-          </p>
-          <Link
-            to="/contact"
-            className="group inline-flex items-center justify-center bg-white text-emerald-700 px-10 py-4 rounded-xl font-bold text-lg hover:bg-emerald-50 transition-all duration-300 hover:scale-105 hover:shadow-2xl animate-fade-in-up"
-            style={{ animationDelay: '0.2s' }}
-          >
-            Send a Message Now
-            <ArrowRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Animation keyframes */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
+      {/* Animation Keyframes */}
+      <style>
+        {`
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
+          .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
           }
-        }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 }

@@ -114,7 +114,7 @@ function About() {
                 <div className="relative inline-block mb-8 group">
                   <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden ring-4 ring-emerald-100 group-hover:ring-emerald-300 transition-all duration-500">
                     <img
-                      src={`http://127.0.0.1:8000${profile.profile_image}`}
+                      src={`${profile.profile_image}`}
                       alt={profile.full_name}
                       className="w-full h-full object-cover"
                     />
