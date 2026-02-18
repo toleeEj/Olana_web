@@ -6,6 +6,7 @@ function Blog() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [expandedPostId, setExpandedPostId] = useState(null);
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -90,7 +91,7 @@ function Blog() {
 
                 {/* Content */}
                 <div className="p-6 flex flex-col flex-grow">
-                  {/* Meta: category + date */}
+                  {/* Meta */}
                   <div className="flex items-center justify-between mb-4">
                     {post.category ? (
                       <span className="inline-flex items-center px-3 py-1 bg-emerald-100 text-emerald-700 text-sm rounded-full">
@@ -109,8 +110,10 @@ function Blog() {
                     {post.title}
                   </h3>
 
-                  <p className="text-gray-600 mb-6 line-clamp-3 flex-grow">
-                    {post.content.replace(/<[^>]*>/g, '').substring(0, 200)}...
+                  <p className="text-gray-600 mb-6 flex-grow">
+                    {expandedPostId === post.id
+                      ? post.content.replace(/<[^>]*>/g, '')
+                      : `${post.content.replace(/<[^>]*>/g, '').substring(0, 200)}...`}
                   </p>
 
                   {/* Tags */}
@@ -128,13 +131,15 @@ function Blog() {
                     </div>
                   )}
 
-                  <a
-                    href={`/blog/${post.slug}`}
+                  <button
+                    onClick={() =>
+                      setExpandedPostId(expandedPostId === post.id ? null : post.id)
+                    }
                     className="mt-auto inline-flex items-center text-emerald-600 font-medium hover:text-emerald-700 transition-colors group/link"
                   >
-                    Read Full Article
+                    {expandedPostId === post.id ? 'Hide Article' : 'Read Full Article'}
                     <span className="ml-2 transform group-hover/link:translate-x-1 transition-transform">→</span>
-                  </a>
+                  </button>
                 </div>
               </article>
             ))}
@@ -155,31 +160,15 @@ function Blog() {
       {/* Animation keyframes */}
       <style jsx>{`
         @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
-        }
-        .animate-fade-in-down {
-          animation: fadeInDown 0.6s ease-out forwards;
-        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+        .animate-fade-in-down { animation: fadeInDown 0.6s ease-out forwards; }
       `}</style>
     </div>
   );
