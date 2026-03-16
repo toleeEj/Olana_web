@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import adminApi from '../services/adminApi';
-import { 
-  Users, FileText, BookOpen, MessageSquare, 
+import {
+  Users, FileText, BookOpen, MessageSquare,
   Calendar, TrendingUp, ChevronRight, PlusCircle,
   Inbox, FileCheck, Clock, ArrowUpRight,
   Sparkles, Activity, Shield, Target,
@@ -79,7 +79,7 @@ export default function Dashboard() {
     return (
       <div className="bg-gradient-to-r from-[#8B3D3D] to-[#B64A4A] bg-opacity-10 border border-[#8B3D3D] text-[#8B3D3D] px-6 py-4 rounded-xl flex items-center justify-between shadow-lg">
         <span className="font-medium">{error}</span>
-        <button 
+        <button
           onClick={fetchDashboardData}
           className="px-4 py-2 bg-[#8B3D3D] text-white rounded-lg hover:bg-[#6E3131] transition-all shadow-md hover:shadow-lg text-sm font-medium"
         >
@@ -105,45 +105,45 @@ export default function Dashboard() {
                 Welcome back, here's your overview
               </p>
             </div>
-            
+
           </div>
         </div>
       </div>
 
       {/* Stats Grid with Enhanced Colors */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        <StatCard 
-          icon={<Users size={22} />} 
-          title="Total Profiles" 
-          value={stats.profiles} 
+        <StatCard
+          icon={<Users size={22} />}
+          title="Total Profiles"
+          value={stats.profiles}
           color="darkGreen"
-        
+
         />
-        <StatCard 
-          icon={<FileText size={22} />} 
-          title="Portfolio Items" 
-          value={stats.portfolios} 
+        <StatCard
+          icon={<FileText size={22} />}
+          title="Portfolio Items"
+          value={stats.portfolios}
           color="lightGreen"
-          
+
         />
-        <StatCard 
-          icon={<BookOpen size={22} />} 
-          title="Blog Posts" 
-          value={stats.blogPosts} 
+        <StatCard
+          icon={<BookOpen size={22} />}
+          title="Blog Posts"
+          value={stats.blogPosts}
           color="teal"
-          
+
         />
-        <StatCard 
-          icon={<FileCheck size={22} />} 
-          title="Products" 
-          value={stats.products} 
+        <StatCard
+          icon={<FileCheck size={22} />}
+          title="Products"
+          value={stats.products}
           color="sage"
-          
+
         />
-        <StatCard 
-          icon={<Inbox size={22} />} 
-          title="Unread Messages" 
-          value={stats.unreadMessages} 
+        <StatCard
+          icon={<Inbox size={22} />}
+          title="Unread Messages"
+          value={stats.unreadMessages}
           color={stats.unreadMessages > 0 ? "coral" : "gray"}
           alert={stats.unreadMessages > 0}
         />
@@ -172,7 +172,7 @@ export default function Dashboard() {
                 </button>
               </div>
             ) : (
-              recentPosts.map((post, index) => (
+              recentPosts.map((post,) => (
                 <div key={post.id} className="px-6 py-4 hover:bg-[#F8FAF5] transition-colors cursor-pointer">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -182,17 +182,16 @@ export default function Dashboard() {
                       <div className="flex items-center gap-4 text-sm">
                         <span className="text-[#5B6E6B] flex items-center gap-1.5">
                           <Clock size={14} className="text-[#7ABF8E]" />
-                          {new Date(post.published_date).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric', 
-                            year: 'numeric' 
+                          {new Date(post.published_date).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
                           })}
                         </span>
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                          post.is_published 
-                            ? 'bg-[#7ABF8E] bg-opacity-20 text-[#1B4D3E] border border-[#7ABF8E]' 
-                            : 'bg-[#E8D5B5] bg-opacity-30 text-[#8B7355] border border-[#E8D5B5]'
-                        }`}>
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${post.is_published
+                          ? 'bg-[#7ABF8E] bg-opacity-20 text-[#1B4D3E] border border-[#7ABF8E]'
+                          : 'bg-[#E8D5B5] bg-opacity-30 text-[#8B7355] border border-[#E8D5B5]'
+                          }`}>
                           {post.is_published ? 'Published' : 'Draft'}
                         </span>
                       </div>
@@ -264,27 +263,27 @@ export default function Dashboard() {
           </span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          <QuickActionButton 
-            to="/admin/blog/posts" 
-            label="New Blog Post" 
+          <QuickActionButton
+            to="/admin/blog/posts"
+            label="New Blog Post"
             icon={<BookOpen size={18} />}
             color="darkGreen"
           />
-          <QuickActionButton 
-            to="/admin/works/portfolio" 
-            label="Add Portfolio Item" 
+          <QuickActionButton
+            to="/admin/works/portfolio"
+            label="Add Portfolio Item"
             icon={<FileText size={18} />}
             color="lightGreen"
           />
-          <QuickActionButton 
-            to="/admin/contact/messages" 
-            label="View Messages" 
+          <QuickActionButton
+            to="/admin/contact/messages"
+            label="View Messages"
             icon={<MessageSquare size={18} />}
             color="teal"
           />
-          <QuickActionButton 
-            to="/admin/core/profiles" 
-            label="Edit Profile" 
+          <QuickActionButton
+            to="/admin/core/profiles"
+            label="Edit Profile"
             icon={<Users size={18} />}
             color="sage"
           />
@@ -295,7 +294,7 @@ export default function Dashboard() {
 }
 
 // Enhanced Helper Components
-function StatCard({ icon, title, value, color, trend, alert }) {
+function StatCard({ icon, title, value, color, alert }) {
   const colorClasses = {
     darkGreen: 'bg-gradient-to-br from-[#1B4D3E] to-[#2E6B52] text-white',
     lightGreen: 'bg-gradient-to-br from-[#7ABF8E] to-[#9CD4A8] text-[#1B4D3E]',
@@ -312,7 +311,7 @@ function StatCard({ icon, title, value, color, trend, alert }) {
         <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-white"></div>
         <div className="absolute -left-4 -bottom-4 w-32 h-32 rounded-full bg-white"></div>
       </div>
-      
+
       <div className="relative">
         <div className="flex items-start justify-between mb-2">
           <div>
@@ -348,7 +347,7 @@ function QuickActionButton({ to, label, icon, color }) {
   };
 
   return (
-    <a 
+    <a
       href={to}
       className={`flex items-center justify-center gap-2.5 px-4 py-4 bg-gradient-to-r ${colorClasses[color]} rounded-xl shadow-md hover:shadow-lg transition-all duration-300 font-medium text-sm group relative overflow-hidden`}
     >

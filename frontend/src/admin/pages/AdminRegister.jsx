@@ -11,6 +11,7 @@ export default function AdminRegister() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,17 +25,16 @@ export default function AdminRegister() {
 
     try {
       await adminApi.post('/register/', form);
-      
-      // Success → redirect to login (you can also auto-login here if you want)
       alert('Account created successfully! Please sign in.');
-      navigate('/admin/login');
+      navigate('/admin/login', { replace: true });
     } catch (err) {
       if (err.response?.data) {
-        // Show first error message (django often returns object with field errors)
         const firstError = Object.values(err.response.data)[0];
-        setError(Array.isArray(firstError) ? firstError[0] : 'Registration failed');
+        setError(
+          Array.isArray(firstError) ? firstError[0] : 'Registration failed. Please check your details.'
+        );
       } else {
-        setError('Network error or server is unreachable');
+        setError('Network error. Please try again later.');
       }
     } finally {
       setLoading(false);
@@ -42,83 +42,116 @@ export default function AdminRegister() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Create Admin Account</h1>
-          <p className="mt-2 text-sm text-gray-600">Set up your first admin user</p>
-        </div>
-
-        {error && (
-          <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center">
-            {error}
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md">
+        <div className="bg-gray-900/70 backdrop-blur-sm border border-emerald-900/40 rounded-2xl shadow-2xl shadow-black/40 p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-emerald-400 tracking-tight">
+              Create Admin Account
+            </h1>
+            <p className="mt-2 text-sm text-gray-400">
+              Set up secure access to the management panel
+            </p>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <input
-            name="username"
-            type="text"
-            placeholder="Username"
-            value={form.username}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-            required
-            autoFocus
-          />
+          {error && (
+            <div className="mb-6 p-4 bg-red-950/60 border border-red-800/50 text-red-300 rounded-xl text-sm text-center">
+              {error}
+            </div>
+          )}
 
-          <input
-            name="email"
-            type="email"
-            placeholder="Email address"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-            required
-          />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <input
+              name="username"
+              type="text"
+              placeholder="Username"
+              value={form.username}
+              onChange={handleChange}
+              className="w-full px-4 py-3.5 bg-gray-800/60 border border-gray-700 rounded-xl 
+                       text-white placeholder-gray-500 
+                       focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/30 
+                       outline-none transition-all duration-200"
+              required
+              autoFocus
+            />
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-            required
-          />
+            <input
+              name="email"
+              type="email"
+              placeholder="Email address"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full px-4 py-3.5 bg-gray-800/60 border border-gray-700 rounded-xl 
+                       text-white placeholder-gray-500 
+                       focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/30 
+                       outline-none transition-all duration-200"
+              required
+            />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`
-              w-full py-3 px-4 font-semibold rounded-lg text-white transition mt-2
-              ${loading 
-                ? 'bg-green-400 cursor-not-allowed' 
-                : 'bg-green-600 hover:bg-green-700 active:bg-green-800'}
-            `}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z" />
-                </svg>
-                Creating account...
-              </div>
-            ) : (
-              'Create Account'
-            )}
-          </button>
-        </form>
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full px-4 py-3.5 bg-gray-800/60 border border-gray-700 rounded-xl 
+                       text-white placeholder-gray-500 
+                       focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/30 
+                       outline-none transition-all duration-200"
+              required
+            />
 
-        <div className="mt-8 text-center text-sm text-gray-600">
-          Already have an account?{' '}
-          <Link
-            to="/admin/login"
-            className="text-green-600 font-medium hover:text-green-800 hover:underline"
-          >
-            Sign in
-          </Link>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`
+                w-full py-3.5 px-4 font-medium rounded-xl text-white
+                bg-gradient-to-r from-emerald-700 to-emerald-600
+                hover:from-emerald-600 hover:to-emerald-500
+                active:from-emerald-800 active:to-emerald-700
+                disabled:opacity-50 disabled:cursor-not-allowed
+                transition-all duration-200 shadow-md shadow-emerald-900/30
+                flex items-center justify-center gap-2 mt-2
+              `}
+            >
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z"
+                    />
+                  </svg>
+                  Creating account...
+                </>
+              ) : (
+                'Create Account'
+              )}
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-sm text-gray-500">
+            Already have access?{' '}
+            <Link
+              to="/admin/login"
+              className="text-emerald-500 hover:text-emerald-400 font-medium transition-colors"
+            >
+              Sign in
+            </Link>
+          </p>
         </div>
       </div>
     </div>

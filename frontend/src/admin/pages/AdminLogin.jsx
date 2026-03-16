@@ -1,13 +1,14 @@
 // src/admin/pages/AdminLogin.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import adminApi from '../services/adminApi'; // adjust path if needed
+import adminApi from '../services/adminApi';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -17,109 +18,137 @@ export default function AdminLogin() {
 
     try {
       const res = await adminApi.post('/token/', { username, password });
-
       localStorage.setItem('accessToken', res.data.access);
       localStorage.setItem('refreshToken', res.data.refresh);
-
-      // Optional: you can store user info later if you decode the token
       navigate('/admin/dashboard', { replace: true });
     } catch (err) {
-      if (err.response) {
-        if (err.response.status === 401) {
-          setError('Invalid username or password');
-        } else if (err.response.status === 400) {
-          setError('Please fill in all fields correctly');
-        } else {
-          setError('Something went wrong. Please try again.');
-        }
-      } else {
-        setError('Network error. Please check your connection.');
-      }
+      const status = err.response?.status;
+      if (status === 401) setError('Invalid username or password');
+      else if (status === 400) setError('Please complete all fields correctly');
+      else setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Dr. Olana Admin</h1>
-          <p className="mt-2 text-sm text-gray-600">Sign in to manage content</p>
-        </div>
-
-        {error && (
-          <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-center">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-5">
-          <div>
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              required
-              autoFocus
-            />
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md">
+        <div className="bg-gray-900/70 backdrop-blur-sm border border-emerald-900/40 rounded-2xl shadow-2xl shadow-black/40 p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-emerald-400 tracking-tight">
+              Dr. Olana Admin
+            </h1>
+            <p className="mt-2 text-sm text-gray-400">
+              Secure access to management panel
+            </p>
           </div>
 
-          <div>
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-              required
-            />
-          </div>
+          {error && (
+            <div className="mb-6 p-4 bg-red-950/60 border border-red-800/50 text-red-300 rounded-xl text-sm text-center">
+              {error}
+            </div>
+          )}
 
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center text-gray-600">
-              <input type="checkbox" className="h-4 w-4 text-blue-600 border-gray-300 rounded mr-2" />
-              Remember me
-            </label>
-            <a href="#" className="text-blue-600 hover:text-blue-800 hover:underline">
-              Forgot password?
-            </a>
-          </div>
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full px-4 py-3.5 bg-gray-800/60 border border-gray-700 rounded-xl 
+                         text-white placeholder-gray-500 
+                         focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/30 
+                         outline-none transition-all duration-200"
+                required
+                autoFocus
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`
-              w-full py-3 px-4 font-semibold rounded-lg text-white transition
-              ${loading 
-                ? 'bg-blue-400 cursor-not-allowed' 
-                : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'}
-            `}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z" />
-                </svg>
-                Signing in...
-              </div>
-            ) : (
-              'Sign In'
-            )}
-          </button>
-        </form>
+            <div>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3.5 bg-gray-800/60 border border-gray-700 rounded-xl 
+                         text-white placeholder-gray-500 
+                         focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/30 
+                         outline-none transition-all duration-200"
+                required
+              />
+            </div>
 
-        <div className="mt-8 text-center text-sm text-gray-600">
-          Don't have an account?{' '}
-          <Link
-            to="/admin/register"
-            className="text-blue-600 font-medium hover:text-blue-800 hover:underline"
-          >
-            Create admin account
-          </Link>
+            <div className="flex items-center justify-between text-sm text-gray-400">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-600 bg-gray-700 
+                           text-emerald-600 focus:ring-emerald-600/30"
+                />
+                <span className="ml-2">Remember me</span>
+              </label>
+
+              <a
+                href="#"
+                className="text-emerald-500 hover:text-emerald-400 transition-colors"
+              >
+                Forgot password?
+              </a>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`
+                w-full py-3.5 px-4 font-medium rounded-xl text-white
+                bg-gradient-to-r from-emerald-700 to-emerald-600
+                hover:from-emerald-600 hover:to-emerald-500
+                active:from-emerald-800 active:to-emerald-700
+                disabled:opacity-50 disabled:cursor-not-allowed
+                transition-all duration-200 shadow-md shadow-emerald-900/30
+                flex items-center justify-center gap-2
+              `}
+            >
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z"
+                    />
+                  </svg>
+                  Signing in...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-sm text-gray-500">
+            Don't have access?{' '}
+            <Link
+              to="/admin/register"
+              className="text-emerald-500 hover:text-emerald-400 font-medium transition-colors"
+            >
+              Request admin account
+            </Link>
+          </p>
         </div>
       </div>
     </div>
