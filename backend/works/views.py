@@ -10,11 +10,12 @@ class PortfolioViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        # Auto-assign the logged-in user's profile (or main one if not authenticated)
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             profile = self.request.user.profile
         else:
-            profile = Profile.objects.first()  # Fallback for public, but not used for create
+            profile = Profile.objects.first()
+            if not profile:
+                raise serializers.ValidationError("No profile found. Create one first.")
         serializer.save(profile=profile)
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -23,9 +24,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        # Same auto-assign logic
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             profile = self.request.user.profile
         else:
             profile = Profile.objects.first()
+            if not profile:
+                raise serializers.ValidationError("No profile found. Create one first.")
         serializer.save(profile=profile)

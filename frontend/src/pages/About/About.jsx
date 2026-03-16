@@ -265,7 +265,7 @@ function About() {
               <h3 className="text-2xl font-semibold text-gray-900 mb-6">Curriculum Vitae</h3>
               {resume?.pdf_file ? (
                 <a
-                  href={`http://127.0.0.1:8000${resume.pdf_file}`}
+                  href={`${resume.pdf_file}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-10 py-4 rounded-xl font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 hover:scale-105 hover:shadow-2xl"

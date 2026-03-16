@@ -18,9 +18,6 @@ venv.bak/
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Django media & static (don't upload uploaded files)
-backend/media/
-backend/staticfiles/
 
 # Node / React
 frontend/node_modules/
